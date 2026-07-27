@@ -26,7 +26,7 @@ import json, os, sys, datetime
 
 RAW = os.path.join(os.path.dirname(__file__), "raw")
 TPL = os.path.join(os.path.dirname(__file__), "index.template.html")
-OUT = os.path.join(os.path.dirname(__file__), "index.html")
+OUT = os.path.join(os.path.dirname(__file__), "public", "index.html")
 
 MET = {  # column id -> field
     "google_analytics_4_sessions": "sessions",
@@ -161,6 +161,7 @@ def main():
     with open(TPL) as f:
         tpl = f.read()
     html = tpl.replace("__GA4_DATA_PLACEHOLDER__", json.dumps(data, separators=(",", ":")))
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as f:
         f.write(html)
 
