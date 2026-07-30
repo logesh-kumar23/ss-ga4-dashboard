@@ -470,7 +470,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       prev: derive(prev),
       series
     };
-  }, [win]);
+  }, [win, activeProduct]);
 
   // ---- source totals (28d) used to re-scope the cards when a source is selected
   const srcTotals = useMemo(() => {
@@ -481,7 +481,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       cur: c ? derive(c) : derive(empty()),
       prev: p ? derive(p) : null
     };
-  }, [channel]);
+  }, [channel, activeProduct]);
   const cardCur = sourceView && srcTotals ? srcTotals.cur : trend.cur;
   const cardPrev = sourceView && srcTotals ? srcTotals.prev : trend.prev;
   const cardsCompare = sourceView ? showCompare && cardPrev != null : compareOn;
@@ -505,8 +505,8 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         dKeyEvents: delta(c.keyEvents, p ? p.keyEvents : 0)
       };
     }).filter(r => channel === "All channels" || r.channel === channel);
-  }, [channel]);
-  const channelList = useMemo(() => DATA.channelCur.map(r => r.channel), []);
+  }, [channel, activeProduct]);
+  const channelList = useMemo(() => DATA.channelCur.map(r => r.channel), [activeProduct]);
 
   // ---- pages table: all-traffic landing pages (Landing page + query string).
   //      Default = all channels (accurate GA4 totals). Channel dropdown drills into one source.
@@ -566,7 +566,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       sliceCur,
       slicePrev
     };
-  }, [channel, applied]);
+  }, [channel, applied, activeProduct]);
   const deviceRows = useMemo(() => {
     const pm = new Map(DATA.devicePrev.map(r => [r.device, derive(r)]));
     return DATA.deviceCur.map(r => {
@@ -582,7 +582,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
         dSessions: delta(c.sessions, p ? p.sessions : 0)
       };
     });
-  }, []);
+  }, [activeProduct]);
   const keyEventRows = useMemo(() => {
     const pm = new Map(DATA.keyEventPrev.map(r => [r.event, r.keyEvents]));
     const total = DATA.keyEventCur.reduce((s, r) => s + r.keyEvents, 0) || 1;
@@ -594,7 +594,7 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
       prevKeyEvents: pm.has(r.event) ? pm.get(r.event) : null,
       dKeyEvents: delta(r.keyEvents, pm.get(r.event) || 0)
     }));
-  }, []);
+  }, [activeProduct]);
   const METRICS = [{
     key: "sessions",
     label: "Sessions",
